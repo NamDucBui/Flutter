@@ -35,6 +35,11 @@ class _QuestionsState extends State<Questions> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
+              'Question ${currentQuestionIndex + 1} / ${questions.length}',
+              style: GoogleFonts.lato(color: Colors.white, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            Text(
               currentQuestion.questionText,
               style: GoogleFonts.lato(
                 color: Colors.white,
