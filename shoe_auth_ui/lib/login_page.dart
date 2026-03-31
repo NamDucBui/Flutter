@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoe_auth_ui/create_account_page.dart';
 import 'package:shoe_auth_ui/icon.dart';
+import 'package:shoe_auth_ui/hello.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +13,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
+
+  final _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: 'Email',
@@ -95,9 +99,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Đăng nhập thành công (demo)'),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    Hello(email: _emailController.text),
                               ),
                             );
                           }

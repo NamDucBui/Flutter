@@ -20,6 +20,7 @@ class ExpenseItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('\$${expense.amount.toStringAsFixed(2)}'),
+                // SizedBox(width: 150),
                 Row(
                   children: [
                     Icon(categoryIcons[expense.category]),
