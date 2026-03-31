@@ -6,12 +6,15 @@ class CurrentWeather extends StatelessWidget {
   final Weather weather;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('${weather.temperature}°C', style: TextStyle(fontSize: 60)),
-        Text(weather.description),
-        Text(weather.cityName),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(90),
+      child: Column(
+        children: [
+          Text('${weather.temperature}°C', style: TextStyle(fontSize: 60)),
+          Text(weather.description),
+          Text(weather.cityName),
+        ],
+      ),
     );
   }
 }
