@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/models/hourly_weather.dart';
 import 'package:weather_app/models/next_day_weather.dart';
 import '../models/weather.dart';
 
 class WeatherService {
-  final String apiKey = "9a1185626c5878c08b8be6786dec046a";
+  final String apiKey = dotenv.env['OWM_API_KEY'] ?? '';
 
   // 1. Lấy thời tiết hiện tại cho 1 city
   Future<Weather> fetchWeather(String city) async {
@@ -39,7 +40,6 @@ class WeatherService {
     );
 
     final response = await http.get(url);
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
