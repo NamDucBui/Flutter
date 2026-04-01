@@ -24937,7 +24937,7 @@ ik:function ik(a){this.a=a},
 aom(){var s=0,r=A.N(t.H),q,p,o,n,m,l,k
 var $async$aom=A.O(function(a,b){if(a===1)return A.K(b,r)
 for(;;)switch(s){case 0:s=2
-return A.Q($.asa().u4(".env"),$async$aom)
+return A.Q($.asa().u4("assets/.env"),$async$aom)
 case 2:if($.Z==null)A.awl()
 q=$.Z
 q.toString
