@@ -6,7 +6,7 @@ import 'package:weather_app/models/next_day_weather.dart';
 import 'package:weather_app/models/weather.dart';
 import 'package:weather_app/services/weather_service.dart';
 import 'package:weather_app/widgets/background_widget.dart';
-import 'package:weather_app/widgets/city.dart';
+import 'package:weather_app/widgets/city_page.dart';
 import 'package:weather_app/widgets/search_bar.dart';
 
 class HomeScreen extends StatefulWidget {

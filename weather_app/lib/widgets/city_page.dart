@@ -6,7 +6,7 @@ import 'package:weather_app/widgets/hourly_weather_list.dart';
 import 'package:weather_app/widgets/weather_infor_card.dart';
 
 class CityPage extends StatelessWidget {
-  const CityPage({required this.data});
+  const CityPage({super.key, required this.data});
 
   final CityWeatherData data;
 

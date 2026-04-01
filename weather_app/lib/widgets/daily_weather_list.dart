@@ -15,7 +15,7 @@ class DailyWeatherList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         itemCount: dailyForecast.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
         itemBuilder: (context, index) => DayCard(day: dailyForecast[index]),
       ),
     );
