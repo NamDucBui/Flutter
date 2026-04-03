@@ -15,7 +15,7 @@ Local-first notes app inspired by iPhone Notes / Evernote.
 | Platform | iOS, Android, Web, macOS, Windows, Linux |
 | Stack | Flutter + Riverpod + Isar + flutter_quill |
 | Status | Active — MVP in progress |
-| Plan | `plans/260403-1454-flutter-notes-app/` |
+| Plan | `mobile/plans/260403-1454-flutter-notes-app/` |
 
 **MVP Features:** Rich text editor, folders, tags, full-text search, pin/color notes, dark/light theme.
 **Deferred:** Cloud sync, handwriting, export, auth.
@@ -32,7 +32,8 @@ REST API for cloud sync feature — scaffolded when Notes App MVP is complete.
 
 ## Workspace Conventions
 
-- Plans → `plans/` (workspace-level, not inside sub-projects)
+- Plans → `plans/` (workspace-level) + `{subproject}/plans/` (sub-project level)
 - Docs → `docs/` (this directory)
 - Shared config → `.claude/` (skills, hooks, rules)
+- Sub-projects have `.claude/.ck.json` for plan path configuration
 - Each sub-project has its own `CLAUDE.md` with project-specific context

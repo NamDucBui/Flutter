@@ -7,7 +7,7 @@ effort: 80h
 issue:
 branch: main
 tags: [flutter, feature, frontend, database]
-blockedBy: [260403-1522-workspace-orchestration-setup]
+blockedBy: []
 blocks: []
 created: 2026-04-03
 ---
@@ -19,7 +19,7 @@ created: 2026-04-03
 Build a local-first notes app inspired by iPhone Notes. All platforms (iOS, Android, Web, Desktop).
 **Scope (MVP):** Rich text editing, folders, tags, search, pin/color notes, dark/light theme. No sync, no handwriting.
 
-**Research:** [Research Report](../../plans/reports/research-260403-1446-flutter-notes-app.md)
+**Research:** [Research Report](../../../plans/reports/research-260403-1446-flutter-notes-app.md)
 
 ## Tech Stack
 

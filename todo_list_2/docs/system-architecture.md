@@ -7,9 +7,9 @@
 ```
 todo_list_2/                    ← Workspace root
 ├── .claude/                    ← Shared: skills, hooks, rules, settings
-├── mobile/                     ← Flutter Notes App
-├── backend/                    ← NodeJS API (planned)
-├── plans/                      ← All implementation plans
+├── mobile/                     ← Flutter Notes App (has .claude/.ck.json + plans/)
+├── backend/                    ← NodeJS API (has .claude/.ck.json)
+├── plans/                      ← Workspace-level plans
 └── docs/                       ← This directory
 ```
 

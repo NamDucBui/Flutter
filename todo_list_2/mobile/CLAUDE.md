@@ -20,8 +20,8 @@ Inherits all rules from workspace root `CLAUDE.md`. Rules below are Flutter-spec
 
 ## Project Plans
 
-Plans are stored at workspace level: `../plans/`
-Active plan: `../plans/260403-1454-flutter-notes-app/`
+Plans are stored at: `plans/` (sub-project level)
+Active plan: `plans/260403-1454-flutter-notes-app/`
 
 ## Commands
 

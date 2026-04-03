@@ -1,0 +1,6 @@
+{
+  "paths": {
+    "plans": "plans",
+    "docs": "../docs"
+  }
+}
