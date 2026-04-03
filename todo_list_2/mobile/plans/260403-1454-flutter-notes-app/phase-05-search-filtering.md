@@ -1,7 +1,7 @@
 # Phase 5: Search & Filtering
 
 **Plan:** [Flutter Notes App MVP](./plan.md)
-**Status:** Pending | **Priority:** P2 | **Est:** 10h
+**Status:** ✅ Complete | **Priority:** P2 | **Est:** 10h
 **Blocked by:** Phase 4 (Folders & Tags)
 
 ## Overview

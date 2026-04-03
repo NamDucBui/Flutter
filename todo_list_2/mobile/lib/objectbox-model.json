@@ -1,0 +1,169 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8130061655941111807",
+      "lastPropertyId": "6:5346321948630794360",
+      "name": "FolderModel",
+      "properties": [
+        {
+          "id": "1:2708070151618778393",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3563647276379873098",
+          "name": "uuid",
+          "indexId": "1:9204931513243072754",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:5748832961948974354",
+          "name": "name",
+          "indexId": "2:4065387705634208994",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:5623097834395097241",
+          "name": "icon",
+          "type": 9
+        },
+        {
+          "id": "5:9026921203004506579",
+          "name": "color",
+          "type": 9
+        },
+        {
+          "id": "6:5346321948630794360",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:505399610510049400",
+      "lastPropertyId": "12:1964185158960972227",
+      "name": "NoteModel",
+      "properties": [
+        {
+          "id": "1:8239946472854426239",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7199622197681342039",
+          "name": "uuid",
+          "indexId": "3:3795511921756032326",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:4952395897594187084",
+          "name": "title",
+          "indexId": "4:2743102382234939992",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:123512426733187090",
+          "name": "plainContent",
+          "indexId": "5:3544425815693812420",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:7634511429781931119",
+          "name": "richContent",
+          "type": 9
+        },
+        {
+          "id": "6:8573007327920044468",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "7:9192503776778847944",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "8:7517734406889091391",
+          "name": "isPinned",
+          "type": 1
+        },
+        {
+          "id": "9:4251519495533624626",
+          "name": "isDeleted",
+          "type": 1
+        },
+        {
+          "id": "10:8807279059011295416",
+          "name": "color",
+          "type": 9
+        },
+        {
+          "id": "11:503832966022260181",
+          "name": "folderUuid",
+          "type": 9
+        },
+        {
+          "id": "12:1964185158960972227",
+          "name": "tagUuids",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:8541023260958132737",
+      "lastPropertyId": "4:166304622642470407",
+      "name": "TagModel",
+      "properties": [
+        {
+          "id": "1:7384646637315560312",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2374286917788752084",
+          "name": "uuid",
+          "indexId": "6:1701395332684960862",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:2325903501850238328",
+          "name": "name",
+          "indexId": "7:6301797620255430184",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "4:166304622642470407",
+          "name": "color",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:8541023260958132737",
+  "lastIndexId": "7:6301797620255430184",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

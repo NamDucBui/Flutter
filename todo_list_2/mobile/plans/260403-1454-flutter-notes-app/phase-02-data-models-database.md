@@ -1,7 +1,7 @@
 # Phase 2: Data Models & Isar Database
 
 **Plan:** [Flutter Notes App MVP](./plan.md)
-**Status:** Pending | **Priority:** P1 | **Est:** 10h
+**Status:** ✅ Complete | **Priority:** P1 | **Est:** 10h
 **Blocked by:** Phase 1 (Project Setup)
 
 ## Overview
