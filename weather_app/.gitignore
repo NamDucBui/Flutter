@@ -29,7 +29,6 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
 /coverage/
 
 # Symbolication related
@@ -42,5 +41,27 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-.env
 
+# Build outputs (keep build/web for Vercel deployment)
+/build/
+!/build/web/
+
+# Sensitive files
+.env
+*/.env
+assets/.env
+
+# Tool and AI configs
+.claude/
+.opencode/
+.repomixignore
+
+# Project management files
+CLAUDE.md
+AGENTS.md
+plans/
+
+# Misc artifacts
+*.cache.dill.track.dill
+release-manifest.json
+" (2).gitignore"

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:weather_app/models/city_weather.dart';
-import 'package:weather_app/models/hourly_weather.dart';
-import 'package:weather_app/models/next_day_weather.dart';
-import 'package:weather_app/models/weather.dart';
-import 'package:weather_app/services/weather_service.dart';
+import 'package:weather_app/controllers/weather_controller.dart';
 import 'package:weather_app/widgets/background_widget.dart';
 import 'package:weather_app/widgets/city_page.dart';
 import 'package:weather_app/widgets/search_bar.dart';
@@ -17,103 +13,99 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final WeatherService _service = WeatherService();
+  final WeatherController _controller = WeatherController();
   final PageController _pageController = PageController();
-
-  // Danh sách thành phố mặc định
-  final List<String> _defaultCities = ['Thai Binh'];
-
-  // Data theo từng thành phố
-  List<CityWeatherData> _cityDataList = [];
-
-  bool _isLoading = true;
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchAllCities();
+    _controller.addListener(_onControllerUpdate);
+    _controller.init().catchError((_) {
+      // Location fail → hỏi user nhập city
+      if (mounted) _promptUserForCity();
+    });
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onControllerUpdate);
+    _controller.dispose();
     _pageController.dispose();
     super.dispose();
   }
 
-  // Fetch tất cả thành phố mặc định song song
-  Future<void> _fetchAllCities() async {
-    setState(() => _isLoading = true);
+  void _onControllerUpdate() {
+    if (!mounted) return;
+    // C3: bounds-check _currentPage trước khi render
+    final maxPage = _controller.cities.length - 1;
+    if (_currentPage > maxPage && maxPage >= 0) {
+      _currentPage = maxPage;
+    }
+    setState(() {});
+  }
 
+  // H4: dispose TextEditingController để tránh memory leak
+  Future<void> _promptUserForCity() async {
+    final textController = TextEditingController();
     try {
-      final results = await Future.wait(
-        _defaultCities.map((city) => _fetchCityData(city)),
+      final city = await showDialog<String>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Location unavailable'),
+          content: TextField(
+            controller: textController,
+            decoration: const InputDecoration(hintText: 'Enter city name...'),
+            autofocus: true,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, textController.text.trim()),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
 
-      if (!mounted) return;
-      setState(() {
-        _cityDataList = results.whereType<CityWeatherData>().toList();
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
+      if (city == null || city.isEmpty) return;
+      final ok = await _controller.addFirstCity(city);
+      if (!ok && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('City not found: $city')),
+        );
+      }
+    } finally {
+      textController.dispose();
     }
   }
 
-  // Fetch data cho 1 thành phố, trả về null nếu lỗi
-  Future<CityWeatherData?> _fetchCityData(String city) async {
-    try {
-      final results = await Future.wait([
-        _service.fetchWeather(city),
-        _service.fetchForecastWeather(city),
-      ]);
-
-      final current = results[0] as Weather;
-      final forecast = results[1] as Map<String, dynamic>;
-
-      return CityWeatherData(
-        current: current,
-        hourly: forecast['hourly'] as List<HourlyWeather>,
-        daily: forecast['daily'] as List<NextDayWeather>,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Tìm kiếm thêm thành phố mới → thêm vào cuối danh sách
   Future<void> _handleSearch(String query) async {
     final city = query.trim();
     if (city.isEmpty) return;
 
-    // Kiểm tra đã có chưa
-    final exists = _cityDataList.any(
-      (d) => d.current.cityName.toLowerCase() == city.toLowerCase(),
-    );
-    if (exists) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('$city đã có trong danh sách')));
+    if (_controller.cityExists(city)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$city is already in the list')),
+      );
       return;
     }
 
-    final data = await _fetchCityData(city);
+    final ok = await _controller.addCity(city);
+    if (!mounted) return;
 
-    if (data == null) {
-      if (!mounted) return;
+    if (!ok) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Không tìm thấy thành phố: $city')),
       );
       return;
     }
 
-    if (!mounted) return;
-    setState(() => _cityDataList.add(data));
-
     // Trượt sang trang vừa thêm
     _pageController.animateToPage(
-      _cityDataList.length - 1,
+      _controller.cities.length - 1,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
@@ -121,34 +113,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (_controller.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (_cityDataList.isEmpty) {
-      return const Scaffold(body: Center(child: Text('Không có dữ liệu.')));
+    if (_controller.errorMessage != null) {
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.cloud_off, size: 64, color: Colors.white54),
+                const SizedBox(height: 16),
+                Text(
+                  _controller.errorMessage!,
+                  style: const TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () => _controller.init().catchError((_) {
+                    if (mounted) _promptUserForCity();
+                  }),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
-    final currentData = _cityDataList[_currentPage];
+    if (_controller.cities.isEmpty) {
+      return const Scaffold(body: Center(child: Text('No data available.')));
+    }
+
+    final currentData = _controller.cities[_currentPage];
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background đổi theo thành phố đang xem
           BackgroundWidget(icon: currentData.current.icon),
-          Container(color: Colors.black.withOpacity(0.3)),
-
+          Container(color: Colors.black.withValues(alpha: 0.3)),
           SafeArea(
             child: Column(
               children: [
-                // 🔍 Search bar
                 _buildSearchBar(),
                 const SizedBox(height: 8),
-
-                // 🔵 Dot indicator
                 _buildDotIndicator(),
 
-                // 📄 PageView — swipe trái/phải (hỗ trợ cả chuột trên web)
+                // PageView — swipe trái/phải (hỗ trợ cả chuột trên web)
                 Expanded(
                   child: ScrollConfiguration(
                     behavior: ScrollConfiguration.of(context).copyWith(
@@ -159,12 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: PageView.builder(
                       controller: _pageController,
-                      itemCount: _cityDataList.length,
-                      onPageChanged: (index) {
-                        setState(() => _currentPage = index);
-                      },
+                      itemCount: _controller.cities.length,
+                      onPageChanged: (index) =>
+                          setState(() => _currentPage = index),
                       itemBuilder: (context, index) {
-                        return CityPage(data: _cityDataList[index]);
+                        return RefreshIndicator(
+                          onRefresh: () => _controller.refreshCity(index),
+                          child: CityPage(data: _controller.cities[index]),
+                        );
                       },
                     ),
                   ),
@@ -184,17 +203,22 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const Icon(Icons.menu, color: Colors.white),
           const SizedBox(width: 12),
-          Expanded(child: SearchBarWidget(onSearch: _handleSearch)),
+          Expanded(
+            child: SearchBarWidget(
+              onSearch: _handleSearch,
+              suggestionsFetcher: _controller.fetchCitySuggestions,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // Dot nhỏ ở trên cho biết đang ở trang nào, dot active sẽ dài hơn
+  // Dot indicator — dot active dài hơn
   Widget _buildDotIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_cityDataList.length, (index) {
+      children: List.generate(_controller.cities.length, (index) {
         final isActive = index == _currentPage;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 250),
@@ -202,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: isActive ? 16 : 6,
           height: 6,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(isActive ? 1 : 0.4),
+            color: Colors.white.withValues(alpha: isActive ? 1.0 : 0.4),
             borderRadius: BorderRadius.circular(3),
           ),
         );

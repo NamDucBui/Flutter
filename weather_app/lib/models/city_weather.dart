@@ -6,10 +6,12 @@ class CityWeatherData {
   final Weather current;
   final List<HourlyWeather> hourly;
   final List<NextDayWeather> daily;
+  final DateTime updatedAt;
 
-  const CityWeatherData({
+  CityWeatherData({
     required this.current,
     required this.hourly,
     required this.daily,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 }

@@ -13,7 +13,9 @@ class NextDayWeather {
     required this.minTemp,
   });
 
-  // Đọc từ response của /forecast (sau khi đã group theo ngày trong weather_service.dart)
+  // Đọc từ map đã được xử lý bởi WeatherService._groupByDay():
+  // temp_max/temp_min là giá trị min/max đã tính từ các mốc 3h trong ngày,
+  // không phải trực tiếp từ /forecast API (vốn không có daily summary).
   factory NextDayWeather.fromJson(Map<String, dynamic> json) {
     return NextDayWeather(
       dt: json['dt'] as int,

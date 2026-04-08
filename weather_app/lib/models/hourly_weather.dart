@@ -1,9 +1,9 @@
-import 'package:intl/intl.dart'; // Cần thêm dependency intl vào pubspec.yaml
+import 'package:intl/intl.dart';
 
 class HourlyWeather {
-  final int dt; // Unix timestamp
-  final String iconCode; // Mã icon thời tiết
-  final double temperature; // Nhiệt độ
+  final int dt;
+  final String iconCode;
+  final double temperature;
   final double pop; // Xác suất mưa (Probability of Precipitation)
 
   HourlyWeather({
@@ -14,32 +14,30 @@ class HourlyWeather {
   });
 
   factory HourlyWeather.fromJson(Map<String, dynamic> json) {
+    // Guard: 'weather' list có thể rỗng, 'pop' là optional trong OWM /forecast
+    final weatherList = json['weather'] as List<dynamic>? ?? [];
+    final iconCode = weatherList.isNotEmpty
+        ? (weatherList[0] as Map<String, dynamic>)['icon'] as String? ?? '01d'
+        : '01d';
+
+    final main = json['main'] as Map<String, dynamic>? ?? {};
+
     return HourlyWeather(
-      dt: json['dt'],
-      iconCode: json['weather'][0]['icon'],
-      temperature: json['main']['temp'].toDouble(),
-      pop: json['pop'].toDouble(),
+      dt: (json['dt'] as int?) ?? 0,
+      iconCode: iconCode,
+      temperature: (main['temp'] as num?)?.toDouble() ?? 0.0,
+      pop: (json['pop'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
-  // Helper method để lấy thời gian định dạng (ví dụ: 9 a.m)
   String get formattedTime {
     final dateTime = DateTime.fromMillisecondsSinceEpoch(dt * 1000);
     return DateFormat('EEE h a').format(dateTime).toLowerCase();
   }
 
-  // Helper method để lấy URL icon
-  String get iconUrl {
-    return 'https://openweathermap.org/img/wn/$iconCode@2x.png';
-  }
+  String get iconUrl => 'https://openweathermap.org/img/wn/$iconCode@2x.png';
 
-  // Helper method để lấy xác suất mưa dưới dạng phần trăm
-  String get popPercentage {
-    return '${(pop * 100).toInt()}%';
-  }
+  String get popPercentage => '${(pop * 100).toInt()}%';
 
-  // Helper method để lấy nhiệt độ dưới dạng số nguyên và có ký hiệu độ C
-  String get temperatureString {
-    return '${temperature.round()}°';
-  }
+  String get temperatureString => '${temperature.round()}°';
 }

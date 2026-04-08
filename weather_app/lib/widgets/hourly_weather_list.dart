@@ -1,5 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:weather_app/models/hourly_weather.dart'; // Import model HourlyWeather
+import 'package:weather_app/models/hourly_weather.dart';
 
 class HourlyWeatherList extends StatelessWidget {
   final List<HourlyWeather> hourlyForecast;
@@ -8,53 +9,103 @@ class HourlyWeatherList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150, // Chiều cao cố định cho danh sách cuộn ngang
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: hourlyForecast.length, // Hiển thị tất cả 48 giờ
-        itemBuilder: (context, index) {
-          final hourlyData = hourlyForecast[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _buildHourlyItem(hourlyData),
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      // 1 frosted panel bọc toàn section — ít BackdropFilter hơn, GPU hiệu quả hơn
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.13),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section header
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.access_time_rounded,
+                          color: Colors.white.withValues(alpha: 0.65), size: 13),
+                      const SizedBox(width: 6),
+                      Text(
+                        'HOURLY FORECAST',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.65),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  height: 1,
+                  indent: 16,
+                  endIndent: 16,
+                ),
+                SizedBox(
+                  height: 140,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    itemCount: hourlyForecast.length,
+                    itemBuilder: (context, index) =>
+                        _HourlyItem(data: hourlyForecast[index]),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _buildHourlyItem(HourlyWeather hourlyData) {
-    return Container(
-      width: 100, // Chiều rộng cố định cho mỗi item
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2), // Màu nền trong suốt nhẹ
-        borderRadius: BorderRadius.circular(15),
-      ),
+class _HourlyItem extends StatelessWidget {
+  final HourlyWeather data;
+  const _HourlyItem({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 100,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            hourlyData.formattedTime,
-            style: const TextStyle(
-              color: Colors.white,
+            data.formattedTime,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.85),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
           Image.network(
-            hourlyData.iconUrl,
+            data.iconUrl,
             width: 40,
             height: 40,
             fit: BoxFit.cover,
+            errorBuilder: (_, e, s) => const Icon(
+              Icons.wb_sunny_outlined,
+              color: Colors.white70,
+              size: 32,
+            ),
           ),
           Text(
-            hourlyData.popPercentage,
+            data.popPercentage,
             style: const TextStyle(color: Colors.lightBlueAccent, fontSize: 12),
           ),
           Text(
-            hourlyData.temperatureString,
+            data.temperatureString,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,

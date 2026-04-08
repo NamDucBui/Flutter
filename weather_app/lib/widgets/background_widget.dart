@@ -9,7 +9,7 @@ class BackgroundWidget extends StatelessWidget {
     if (icon.startsWith('09') || icon.startsWith('10')) return 'rain.jpg';
     if (icon.startsWith('11')) return 'storm.jpg';
     if (icon.startsWith('13')) return 'snow.jpg';
-    return 'assets/images/sunny.jpg';
+    return 'default.jpg';
   }
 
   @override

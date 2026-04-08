@@ -8,57 +8,84 @@ class DayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 290,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.25),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            day.dayLabel,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+          // Ngày — cố định width để các col thẳng hàng
+          SizedBox(
+            width: 80,
+            child: Text(
+              day.dayLabel,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           Image.network(
             day.iconUrl,
-            width: 36,
-            height: 36,
-            errorBuilder: (_, __, ___) => const Icon(
+            width: 32,
+            height: 32,
+            errorBuilder: (_, e, s) => const Icon(
               Icons.wb_sunny_outlined,
               color: Colors.white70,
-              size: 28,
+              size: 26,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${day.maxTemp.round()}°',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+          const Spacer(),
+          // Min temp — mờ
+          Text(
+            '${day.minTemp.round()}°',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Temp range bar
+          _TempRangeBar(min: day.minTemp, max: day.maxTemp),
+          const SizedBox(width: 10),
+          // Max temp — sáng
+          SizedBox(
+            width: 34,
+            child: Text(
+              '${day.maxTemp.round()}°',
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(width: 3),
-              Text(
-                '${day.minTemp.round()}°',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.55),
-                  fontSize: 12,
-                ),
-              ),
-            ],
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Mini bar gradient thể hiện khoảng nhiệt độ trong ngày
+class _TempRangeBar extends StatelessWidget {
+  final double min;
+  final double max;
+
+  const _TempRangeBar({required this.min, required this.max});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 80,
+      height: 4,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(2),
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.withValues(alpha: 0.7),
+            Colors.orange.withValues(alpha: 0.9),
+          ],
+        ),
       ),
     );
   }
