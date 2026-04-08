@@ -14,10 +14,16 @@ class LocationService {
 
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      throw Exception("Không có quyền vị trí");
+      throw Exception("Location permission denied");
     }
 
-    return await Geolocator.getCurrentPosition();
+    // Web dùng IP-based geolocation — cần timeout dài hơn mobile GPS
+    return await Geolocator.getCurrentPosition(
+      locationSettings: LocationSettings(
+        accuracy: kIsWeb ? LocationAccuracy.low : LocationAccuracy.high,
+        timeLimit: Duration(seconds: kIsWeb ? 30 : 15),
+      ),
+    );
   }
 
   Future<List<String>> searchPlaces(String query) async {
